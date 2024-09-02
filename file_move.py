@@ -13,7 +13,7 @@ class FolderAutomation():
         self.date_created = datetime.now()
         self.delete_after = False
         self.name_iterations = True
-        self.automated_archive = []
+        self.automated_archive = {}
 
     """
     Purpose: Create folders based on iterations
@@ -24,13 +24,13 @@ class FolderAutomation():
     def createfolderandfile(self):
         files_created = []
         if self.name_iterations:
-                file_path = os.path.join(self.path,name)
+                
                 # Keeps Track of Iteartion Amount 
                 
                 if self.current_iteration <= self.num_iterations:
-                    
                     # Sets iteration amount to end of string
                     name = str(self.name) + str(int(self.current_iteration) + 1)
+                    file_path = os.path.join(self.path,name)
                     os.makedirs((file_path),exist_ok=True)
                     files_created.append(file_path)
                     self.current_iteration += 1
@@ -72,11 +72,15 @@ class FolderAutomation():
             # Redundant just for visual 
             pass
 
-        def folderArchive(self):
-            created = self.createfolderandfile()
-            for path in created:
-                self.automation_tracker[datetime.now()] = "File created at " + path
+    """
+    Purpose: Run createfolderandfile()
+             Store moves in archive
+    """
+    def folderArchive(self):
+        created = self.createfolderandfile()
+        for path in created:
+            self.automated_archive[datetime.now()] = "File created at " + path
             
-            recent_five = list(self.automation_tracker.values())[-5:]
-            for sort in recent_five:
-                print(sort)
+        recent_five = list(self.automated_archive.values())[-5:]
+        for sort in recent_five:
+            print(sort)

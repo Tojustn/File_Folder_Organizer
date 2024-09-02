@@ -18,6 +18,7 @@ class downloadHandler(FileSystemEventHandler):
             print(f"File is a .cpp file in downloads")
             try:
                 shutil.move(file_path,os.path.join(os.path.expanduser("~"),"Desktop","CPP Files"))
+                print(f"C++ File Moved")
             except Exception:
                 print(f"error")
     def on_deleted(self,event):
@@ -44,6 +45,7 @@ class videoHandler(FileSystemEventHandler):
                 shutil.move(file_path,file_endpath)
                 # Moves files in the video handler class
                 videoHandler.files_moved.append((file_path,file_endpath,file_base_name))
+                print(f"Mp4 Moved")
             except Exception:
                 print("Exception")
 
@@ -54,7 +56,7 @@ if __name__ == "__main__":
     #Created Observer object
     observer = Observer()
 
-    ComSciPath = os.path.join(os.getcwd(),"Desktop","C++School")
+    ComSciPath = os.path.join(os.path.expanduser("~"),"Desktop","C++School")
     ComSciFolderMaker = FolderAutomation(ComSciPath,7,10,"W",False)
     ComSciFolderMaker.folderArchive()
     schedule.every(7).days.at("12:00").do(ComSciFolderMaker.folderArchive)
