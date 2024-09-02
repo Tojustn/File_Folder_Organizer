@@ -1,24 +1,5 @@
 import os, shutil
 from datetime import datetime, timedelta
-class FolderByEndSorter():
-    def __init__ (self, endpath,):
-        self.endpath = endpath
-
-    
-    """
-    Purpose: Move files into designated endpath
-    Parameters: self, end_of_file and path
-
-    Returns: Nothing
-    """
-    def movefiles(self, end_of_file, path):
-        if os.path.exists(path):
-            for file in os.listdir(path):
-                if file.endswith(end_of_file):
-                    shutil.move(os.path.join(path, file),self.endpath)
-        else: 
-            print("The path doesn't exist")
-    
     
     
 
@@ -32,6 +13,7 @@ class FolderAutomation():
         self.date_created = datetime.now()
         self.delete_after = False
         self.name_iterations = True
+        self.automated_archive = []
 
     """
     Purpose: Create folders based on iterations
@@ -40,15 +22,23 @@ class FolderAutomation():
     Returns: Nothing
     """
     def createfolderandfile(self):
+        files_created = []
         if self.name_iterations:
+                file_path = os.path.join(self.path,name)
                 # Keeps Track of Iteartion Amount 
-                self.current_iteration += 1
+                
                 if self.current_iteration <= self.num_iterations:
+                    
                     # Sets iteration amount to end of string
                     name = str(self.name) + str(int(self.current_iteration) + 1)
-                    os.makedirs(os.path.join(self.path,name),exist_ok=True)
+                    os.makedirs((file_path),exist_ok=True)
+                    files_created.append(file_path)
+                    self.current_iteration += 1
+                    return files_created
+
         else:
             os.makedirs(os.path.join(self.path,self.name),exist_ok=True)
+            files_created.append(os.path.join(self.path,self.name))
 
 
     """
@@ -58,8 +48,10 @@ class FolderAutomation():
     Returns: Nothing
     """
     def removefiles(self):
+        files_deleted = []
         # Checks if user wants to delete file after 4 months 
         if self.delete_after == True:
+            file_path = ""
             for file in os.listdir(self.path):
                 # Gets file path 
                 file_path = os.path.join(self.path,file)
@@ -74,10 +66,17 @@ class FolderAutomation():
                 if time_past > timedelta(days=120):
                     # Removes file at path
                     os.unlink(file_path)
+                    files_deleted.append(file_path)
+            return files_deleted
         else: 
             # Redundant just for visual 
             pass
 
-
-        def update_date_created(self):
-            self.date_created = datetime.now()  # Update the date_created to the current time
+        def folderArchive(self):
+            created = self.createfolderandfile()
+            for path in created:
+                self.automation_tracker[datetime.now()] = "File created at " + path
+            
+            recent_five = list(self.automation_tracker.values())[-5:]
+            for sort in recent_five:
+                print(sort)
