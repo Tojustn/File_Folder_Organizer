@@ -23,7 +23,7 @@ class downloadHandler(FileSystemEventHandler):
                 print(f"error")
     def on_deleted(self,event):
         file_path = event.src_path
-        print(f" File: {file_path} was deleted")
+        print(f" File: {file_path} was deleted .cpp")
 
 """
 Purpose: Handle files in my user video file
@@ -33,21 +33,28 @@ Returns: Nothing
 """
 class videoHandler(FileSystemEventHandler):
     files_moved = []
-    def on_created(self,event):
+    def on_created(self, event):
         file_path = event.src_path
         file_dirname = os.path.dirname(file_path)
-        # Gets base name of file
         file_base_name = os.path.basename(file_path)
-        file_path = os.path.join(os.path.expanduser("~"),"Videos")
-        file_endpath = os.path.join(os.path.expanduser("~"),"Videos","mp4")
+        file_endpath = os.path.join(os.path.expanduser("~"), "Videos", "mp4")
+        
         if not event.is_directory and file_base_name.endswith(".mp4"):
             try:
-                shutil.move(file_path,file_endpath)
-                # Moves files in the video handler class
-                videoHandler.files_moved.append((file_path,file_endpath,file_base_name))
-                print(f"Mp4 Moved")
-            except Exception:
-                print("Exception")
+                # Ensure the destination directory exists
+                os.makedirs(file_endpath, exist_ok=True)
+                
+                # Construct the full destination path
+                destination = os.path.join(file_endpath, file_base_name)
+                
+                # Move the file
+                shutil.move(file_path, destination)
+                
+                # Record the move operation
+                self.files_moved.append((file_path, destination, file_base_name))
+                print(f"Mp4 Moved: {file_base_name}")
+            except Exception as e:
+                print(f"Exception occurred while moving {file_base_name}: {str(e)}")
 
 if __name__ == "__main__":
     download_monitor = os.path.join(os.path.expanduser("~"),"Downloads")
